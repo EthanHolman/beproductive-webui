@@ -22,12 +22,11 @@
       </tr>
     </tbody>
   </table>
-  <div>{{ numRows }}</div>
-  <button @click="doDebug">Do Debug</button>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent } from "vue";
+import { format } from "date-fns";
 
 function buildWeeksDaysStructure(dates: any) {
   const arr = [];
@@ -62,39 +61,27 @@ function getDates() {
 
   const allDates = [...blanks, ...dates];
 
-  return reactive(buildWeeksDaysStructure(allDates));
+  return buildWeeksDaysStructure(allDates);
 }
 
 export default defineComponent({
   data() {
     return {
       dates: getDates(),
-      stuff: { mything: "asdf" },
     };
   },
   methods: {
-    doDebug() {
-      console.log(this.$data.dates);
-    },
-    doDebug2(stuff: any) {
-      console.log(stuff);
-    },
     formatWeek(dates: Date[]): string {
-      // return "asdf";
       if (!dates || dates.length === 0) return "";
+
       const filteredDates = dates.filter((x) => !!x);
+
+      const formatter = (date: Date) => format(date, "MMM d");
       return (
-        "" +
-        filteredDates[0].getDate() +
+        formatter(filteredDates[0]) +
         " - " +
-        filteredDates[filteredDates.length - 1].getDate()
+        formatter(filteredDates[filteredDates.length - 1])
       );
-    },
-  },
-  computed: {
-    numRows() {
-      const val = Math.ceil(this.dates.length / 7);
-      return val;
     },
   },
 });
